@@ -1,132 +1,20 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `system` mod in crate `psutil`."><meta name="keywords" content="rust, rustlang, rust-lang, system"><title>psutil::system - Rust</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Module system</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'><a href='../index.html'>psutil</a></p><script>window.sidebarCurrent = {name: 'system', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../src/psutil/system.rs.html#1-837' title='goto source code'>[src]</a></span><span class='in-band'>Module <a href='../index.html'>psutil</a>::<wbr><a class="mod" href=''>system</a></span></h1><div class='docblock'><p>Read information about the operating system from <code>/proc</code>.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.CpuPercentCollector.html"
-                                  title='struct psutil::system::CpuPercentCollector'>CpuPercentCollector</a></td>
-                           <td class='docblock-short'>
-                                <p>To get a CpuPercent struct in non-blocking mode.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.CpuTimes.html"
-                                  title='struct psutil::system::CpuTimes'>CpuTimes</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.CpuTimesPercent.html"
-                                  title='struct psutil::system::CpuTimesPercent'>CpuTimesPercent</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.LoadAverage.html"
-                                  title='struct psutil::system::LoadAverage'>LoadAverage</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.SwapMemory.html"
-                                  title='struct psutil::system::SwapMemory'>SwapMemory</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.VirtualMemory.html"
-                                  title='struct psutil::system::VirtualMemory'>VirtualMemory</a></td>
-                           <td class='docblock-short'>
-                                
-                           </td>
-                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.cpu_percent.html"
-                                  title='fn psutil::system::cpu_percent'>cpu_percent</a></td>
-                           <td class='docblock-short'>
-                                <p>Return a float representing the current system-wide
+<table><tr class='module-item'><td><a class="struct" href="struct.CpuPercentCollector.html" title='psutil::system::CpuPercentCollector struct'>CpuPercentCollector</a></td><td class='docblock-short'><p>To get a CpuPercent struct in non-blocking mode.</p>
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.CpuTimes.html" title='psutil::system::CpuTimes struct'>CpuTimes</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.CpuTimesPercent.html" title='psutil::system::CpuTimesPercent struct'>CpuTimesPercent</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.LoadAverage.html" title='psutil::system::LoadAverage struct'>LoadAverage</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.SwapMemory.html" title='psutil::system::SwapMemory struct'>SwapMemory</a></td><td class='docblock-short'></td></tr><tr class='module-item'><td><a class="struct" href="struct.VirtualMemory.html" title='psutil::system::VirtualMemory struct'>VirtualMemory</a></td><td class='docblock-short'></td></tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table><tr class='module-item'><td><a class="fn" href="fn.cpu_percent.html" title='psutil::system::cpu_percent fn'>cpu_percent</a></td><td class='docblock-short'><p>Return a float representing the current system-wide
 CPU utilization as percentage.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.cpu_percent_percpu.html"
-                                  title='fn psutil::system::cpu_percent_percpu'>cpu_percent_percpu</a></td>
-                           <td class='docblock-short'>
-                                <p>Return a vector of floats representing the current system-wide
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.cpu_percent_percpu.html" title='psutil::system::cpu_percent_percpu fn'>cpu_percent_percpu</a></td><td class='docblock-short'><p>Return a vector of floats representing the current system-wide
 CPU utilization as percentage.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.cpu_times.html"
-                                  title='fn psutil::system::cpu_times'>cpu_times</a></td>
-                           <td class='docblock-short'>
-                                <p>Returns information about cpu times usage.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.cpu_times_percent.html"
-                                  title='fn psutil::system::cpu_times_percent'>cpu_times_percent</a></td>
-                           <td class='docblock-short'>
-                                <p>Return a CpuTimesPercent representing the current detailed
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.cpu_times.html" title='psutil::system::cpu_times fn'>cpu_times</a></td><td class='docblock-short'><p>Returns information about cpu times usage.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.cpu_times_percent.html" title='psutil::system::cpu_times_percent fn'>cpu_times_percent</a></td><td class='docblock-short'><p>Return a CpuTimesPercent representing the current detailed
 CPU utilization as a percentage.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.cpu_times_percent_percpu.html"
-                                  title='fn psutil::system::cpu_times_percent_percpu'>cpu_times_percent_percpu</a></td>
-                           <td class='docblock-short'>
-                                <p>Return a vector of CpuTimesPercent representing the current detailed
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.cpu_times_percent_percpu.html" title='psutil::system::cpu_times_percent_percpu fn'>cpu_times_percent_percpu</a></td><td class='docblock-short'><p>Return a vector of CpuTimesPercent representing the current detailed
 CPU utilization as percentage per cpu.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.cpu_times_percpu.html"
-                                  title='fn psutil::system::cpu_times_percpu'>cpu_times_percpu</a></td>
-                           <td class='docblock-short'>
-                                <p>Returns information about cpu time usage on a Vec
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.cpu_times_percpu.html" title='psutil::system::cpu_times_percpu fn'>cpu_times_percpu</a></td><td class='docblock-short'><p>Returns information about cpu time usage on a Vec
 that contains information per cpu</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.loadavg.html"
-                                  title='fn psutil::system::loadavg'>loadavg</a></td>
-                           <td class='docblock-short'>
-                                <p>Returns the system load average</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.swap_memory.html"
-                                  title='fn psutil::system::swap_memory'>swap_memory</a></td>
-                           <td class='docblock-short'>
-                                <p>Returns information about swap memory usage</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.uptime.html"
-                                  title='fn psutil::system::uptime'>uptime</a></td>
-                           <td class='docblock-short'>
-                                <p>Returns the system uptime in seconds.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="fn" href="fn.virtual_memory.html"
-                                  title='fn psutil::system::virtual_memory'>virtual_memory</a></td>
-                           <td class='docblock-short'>
-                                <p>Returns information about virtual memory usage</p>
-
-                           </td>
-                       </tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "psutil";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.loadavg.html" title='psutil::system::loadavg fn'>loadavg</a></td><td class='docblock-short'><p>Returns the system load average</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.swap_memory.html" title='psutil::system::swap_memory fn'>swap_memory</a></td><td class='docblock-short'><p>Returns information about swap memory usage</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.uptime.html" title='psutil::system::uptime fn'>uptime</a></td><td class='docblock-short'><p>Returns the system uptime in seconds.</p>
+</td></tr><tr class='module-item'><td><a class="fn" href="fn.virtual_memory.html" title='psutil::system::virtual_memory fn'>virtual_memory</a></td><td class='docblock-short'><p>Returns information about virtual memory usage</p>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "psutil";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
