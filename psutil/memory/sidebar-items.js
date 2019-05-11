@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["swap_memory","Returns information about swap memory usage"],["virtual_memory","Returns information about virtual memory usage"]],"struct":[["SwapMemory",""],["VirtualMemory",""]]});
