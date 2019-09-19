@@ -611,7 +611,11 @@ pub fn all() -> Result<Vec<Process>> {
             .file_name()
             .ok_or_else(|| parse_error("Could not read /proc entry", &path))?;
         if let Ok(pid) = PID::from_str(&name.to_string_lossy()) {
-            processes.push(Process::new(pid)?)
+            let process_result = Process::new(pid);
+            match process_result {
+                Ok(process) => processes.push(process),
+                _ => ()
+            }
         }
     }
 
