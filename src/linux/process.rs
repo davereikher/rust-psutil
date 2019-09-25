@@ -386,7 +386,7 @@ pub struct Process {
     /// The thread's exit status.
     pub exit_code: i32,
 
-    pub connections: Option<Connections>, //TODO: remove pub
+    tmap: HashMap<&'static str, Vec<ConnVariant>>,
 }
 
 impl Process {
@@ -495,16 +495,29 @@ impl Process {
             env_start: try_parse!(fields[49]),
             env_end: try_parse!(fields[50]),
             exit_code: try_parse!(fields[51]),
-            connections: None,
+            tmap: Process::create_tmap(),
         };
 
-        println!("Creating process from new internal: {:p}", &proc);
-        proc.connections = Some(Connections::new(&proc as *const Process));
-   
-//        let _pid = unsafe{(*(proc.clone().connections.unwrap().process)).pid};
-//        println!("BLAAAH {}", _pid);
-    
         Ok(proc)
+    }
+
+    fn create_tmap() -> HashMap<&'static str, Vec<ConnVariant>> {
+        let tcp4 = ConnVariant{file: "tcp", conn_type: AF_INET, family: SOCK_STREAM};
+        let tcp6 = ConnVariant{file: "tcp6", conn_type: AF_INET6, family: SOCK_STREAM};
+        let udp4 = ConnVariant{file: "udp", conn_type: AF_INET, family: SOCK_DGRAM};
+        let udp6 = ConnVariant{file: "udp6", conn_type: AF_INET6, family: SOCK_DGRAM};
+        let mut tmap: HashMap<&'static str, Vec<ConnVariant>> = HashMap::new();
+        tmap.insert("all", vec![tcp4, tcp6, udp4, udp6]);
+        tmap.insert("tcp", vec![tcp4, tcp6]);
+        tmap.insert("tcp4", vec![tcp4]);
+        tmap.insert("tcp6", vec![tcp6]);
+        tmap.insert("udp4", vec![udp4]);
+        tmap.insert("udp6", vec![udp6]);
+        tmap.insert("udp", vec![udp4, udp6]);
+        tmap.insert("inet", vec![tcp4, tcp6, udp4, udp6]);
+        tmap.insert("inet4", vec![tcp4, udp4]);
+        tmap.insert("inet6", vec![tcp6, udp6]);
+        tmap
     }
 
     /// Return `true` if the process was alive at the time it was read.
@@ -650,6 +663,117 @@ impl Process {
             _ => unreachable!(),
         }
     }
+
+    fn process_inet(&self, conn_variant: &ConnVariant, sockets: &Vec<&Fd>, pid: PID) -> Result<()> {
+        // Parse /proc/net/tcp* and /proc/net/udp* files.
+        let mut path = procfs_path(pid, "net");
+        path.push(conn_variant.file);
+
+        if path.to_str().ok_or(Error::new(ErrorKind::InvalidData,
+                format!("Unable to parse file name {}", path.display())))?.ends_with('6') && !path.as_path().exists() {
+            // IPv6 not supported
+            return Ok(());
+        }
+
+//        let env = fs::read_to_string(&path)?;
+        println!("opening file {}", path.display());
+        let file = File::open(path)?;
+        let reader = BufReader::new(file);
+
+        for line in reader.lines() {
+            println!("{}", line?);
+        }
+
+//        with open_text(file, buffering=BIGFILE_BUFFERING) as f:
+//            f.readline()  # skip the first line
+//            for lineno, line in enumerate(f, 1):
+//                try:
+//                    _, laddr, raddr, status, _, _, _, _, _, inode = \
+//                        line.split()[:10]
+//                except ValueError:
+//                    raise RuntimeError(
+//                        "error while parsing %s; malformed line %s %r" % (
+//                            file, lineno, line))
+//                if inode in inodes:
+//                    # # We assume inet sockets are unique, so we error
+//                    # # out if there are multiple references to the
+//                    # # same inode. We won't do this for UNIX sockets.
+//                    # if len(inodes[inode]) > 1 and family != socket.AF_UNIX:
+//                    #     raise ValueError("ambiguos inode with multiple "
+//                    #                      "PIDs references")
+//                    pid, fd = inodes[inode][0]
+//                else:
+//                    pid, fd = None, -1
+//                if filter_pid is not None and filter_pid != pid:
+//                    continue
+//                else:
+//                    if type_ == socket.SOCK_STREAM:
+//                        status = TCP_STATUSES[status]
+//                    else:
+//                        status = _common.CONN_NONE
+//                    try:
+//                        laddr = Connections.decode_address(laddr, family)
+//                        raddr = Connections.decode_address(raddr, family)
+//                    except _Ipv6UnsupportedError:
+//                        continue
+//                    yield (fd, family, type_, laddr, raddr, status, pid)
+        Ok(())
+    }
+
+    /// Get list of connections opened by this process
+    pub fn net_connections(&self, kind: &'static str) -> Result<Vec<String>> {
+        let variants: &Vec<ConnVariant> =  self.tmap.get(kind).ok_or(Error::new(
+                ErrorKind::InvalidInput,
+                format!("Unsupported kind of connection: {}", kind)))?;
+
+//        self._procfs_path = get_procfs_path()
+       
+        let fds = self.open_fds().unwrap(); //TODO: error handle with ok_or
+
+        println!("Retrieving for pid {}", self.pid);
+        let sockets: Vec<&Fd> = fds.iter().filter(|x| {
+            if let FdType::Socket(_) = x.link {
+                true
+            } else {
+                false
+            }
+        }).collect();
+
+        if sockets.len() == 0 {
+            // no connections for this process
+            return Ok(vec![]);
+        }
+
+//        ret = set()
+        for &conn_variant in variants {
+            println!("CONN VARIANT: {:?}, AF_INET: {}, AF_INET6: {}", conn_variant, AF_INET, AF_INET6);
+            match conn_variant.family{
+                AF_INET | AF_INET6 => {
+                    println!("THIS IS INET!");
+                    self.process_inet(&conn_variant, &sockets, self.pid);
+                }
+                _ => ()
+            }
+        }
+//                ls = self.process_inet(
+//                    "%s/net/%s" % (self._procfs_path, f),
+//                    family, type_, inodes, filter_pid=pid)
+//            else:
+//                ls = self.process_unix(
+//                    "%s/net/%s" % (self._procfs_path, f),
+//                    family, inodes, filter_pid=pid)
+//            for fd, family, type_, laddr, raddr, status, bound_pid in ls:
+//                if pid:
+//                    conn = _common.pconn(fd, family, type_, laddr, raddr,
+//                                         status)
+//                else:
+//                    conn = _common.sconn(fd, family, type_, laddr, raddr,
+//                                         status, bound_pid)
+//                ret.add(conn)
+//        return list(ret)
+        Ok(vec![])
+
+    }
 }
 
 impl PartialEq for Process {
@@ -687,11 +811,7 @@ pub fn all() -> Result<Vec<Process>> {
             .file_name()
             .ok_or_else(|| parse_error("Could not read /proc entry", &path))?;
         if let Ok(pid) = PID::from_str(&name.to_string_lossy()) {
-            let proc = Process::new(pid)?;
-            let _pid = unsafe{(*(proc.clone().connections.unwrap().process)).pid};
-            println!("MOO {}", _pid);
-           
-            processes.push(proc);
+            processes.push(Process::new(pid)?);
         }
     }
 
@@ -983,7 +1103,7 @@ impl Connections {
 
 //        ret = set()
         for &conn_variant in variants {
-            println!("CONN VARIANT: {:?}", conn_variant);
+            println!("CONN VARIANT: {:?}, AF_INET: {}, AF_INET6: {}", conn_variant, AF_INET, AF_INET6);
             match conn_variant.family{
                 AF_INET | AF_INET6 => {
                     self.process_inet(&conn_variant, &sockets, pid);
@@ -1114,7 +1234,7 @@ mod unit_tests {
         //    p.clone().connections.unwrap().get_proc_inodes();
 //            let fd = p.open_fds();
             
-            p.connections.clone().unwrap().retrieve("tcp");
+            p.net_connections("tcp");
 //            println!("fd is {:?}", fd);
         }
 //        println!("{:?}", get_process().connections.unwrap().get_proc_inodes());
