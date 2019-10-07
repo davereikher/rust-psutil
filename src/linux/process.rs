@@ -16,10 +16,14 @@ use libc::{kill, sysconf, readlink};
 use libc::{SIGKILL, _SC_CLK_TCK, _SC_PAGESIZE, AF_INET, AF_INET6, SOCK_STREAM, SOCK_DGRAM};
 use libc::{c_char};
 
+use std::ffi::CString;
+use std::os::unix::ffi::OsStrExt;
+
 use crate::{GID, PID, UID};
 
 use num_derive::FromPrimitive;    
 use num_traits::FromPrimitive;
+use errno::errno;
 
 lazy_static! {
     static ref TICKS_PER_SECOND: f64 = { unsafe { sysconf(_SC_CLK_TCK) as f64 } };
@@ -638,8 +642,11 @@ impl Process {
     let mut n_read: isize;
 
     unsafe {
-        n_read = readlink(path.to_str().unwrap().as_ptr() as *const c_char, link_dest.as_mut_ptr() as *mut c_char, 4096);
-//        println!("----------------------{}", n_read);
+//        println!("Reading link from path --{}--", path.to_str().unwrap());
+        let path_cstring = CString::new(
+            path.as_os_str().as_bytes()).map_err(|e| parse_error(&format!("Could not parse fd link path: {}", e), &path))?;
+        n_read = readlink(path_cstring.as_ptr(), link_dest.as_mut_ptr() as *mut c_char, 4096);
+//        println!("----------------------read {} bytes, errno: {}", n_read, errno());
 //        println!("++{}", std::str::from_utf8(&link_dest).unwrap());
     }
 
@@ -657,6 +664,7 @@ impl Process {
         .map_err(|e| parse_error(&format!("Could not parse link destination of fd: {}", e), &path))?
         .to_string();
         
+        //println!("link_dest_str: {}", link_dest_str);
         // For now just look at sockets and open files
         if link_dest_str.starts_with("socket:[") { 
         // Socket
@@ -687,11 +695,14 @@ impl Process {
 
     //println!("pid: {}", self.pid);
     for entry in entry_set {
+        //println!("entry: {:?}", entry);
         if let Ok(entry) = entry {
         let path = entry.path();
+        //println!("path: {:?}", path);
         let fd_number = path
             .file_name()
             .ok_or_else(|| parse_error("Could not read /proc entry", &path))?;
+        //println!("fd_number: {:?}", fd_number);
         if let Ok(fd) = Process::get_fd(&path) {
             fds.push(fd);
         }
@@ -804,7 +815,7 @@ impl Process {
         match sockets_on_inode.len() {
             0 => (),
             1 => {
-                //println!("------------------------------FOUND SOCKET!");
+                //println!("------------------------------FOUND SOCKET! path: {} status: {}", path.display(), status);
                 pconns_for_this_file.push(PConn::new(sockets_on_inode[0].number, 
                     conn_variant.family, 
                     conn_variant.conn_type, 
@@ -827,8 +838,9 @@ impl Process {
         ErrorKind::InvalidInput,
         format!("Unsupported kind of connection: {}", kind)))?;
 
-    let fds = self.open_fds().unwrap(); //TODO: error handle with ok_or
-
+    let fds = self.open_fds()?; //TODO: error handle with ok_or
+    
+    //println!("FDS: {:?}", fds);
     //println!("Retrieving for pid {}", self.pid);
     let sockets: Vec<&Fd> = fds.iter().filter(|x| {
         if let FdType::Socket(_) = x.link {
@@ -1021,8 +1033,8 @@ mod unit_tests {
 //        print!("{}\t ", p.pid);
     //    p.clone().connections.unwrap().get_proc_inodes();
 //        let fd = p.open_fds();
-        
-        let res = p.net_connections("tcp").unwrap();
+        //println!("Looking at pid {}", p.pid);
+        let res = p.net_connections("tcp4").unwrap_or(vec![]);
         if res.len() > 0 {
             println!("for pid {}: {:?}",p.pid, res);
         }
