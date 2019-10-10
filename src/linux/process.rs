@@ -774,7 +774,7 @@ impl Process {
 
     fn process_inet(&self, conn_variant: &ConnVariant, sockets: &Vec<&Fd>, pid: PID) -> Result<Vec<PConn>> {
     //println!("IN PROCESS_INET");
-    let mut path = procfs_path(pid, "net");
+    let mut path = PathBuf::from("/proc/net");
     path.push(conn_variant.file);
 
     if path.to_str().ok_or(Error::new(ErrorKind::InvalidData,
@@ -854,6 +854,7 @@ impl Process {
         // no connections for this process
         return Ok(vec![]);
     }
+//    println!("pid: {}, SOCKETS: {:?}", self.pid, sockets);
 
 //    ret = set()
     let mut ret: Vec<PConn> = Vec::new();
@@ -1036,7 +1037,7 @@ mod unit_tests {
         //println!("Looking at pid {}", p.pid);
         let res = p.net_connections("tcp4").unwrap_or(vec![]);
         if res.len() > 0 {
-            println!("for pid {}: {:?}",p.pid, res);
+            println!("---------------- For pid {}: {:?}",p.pid, res);
         }
 //        println!("fd is {:?}", fd);
     }
